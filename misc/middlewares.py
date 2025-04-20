@@ -2,7 +2,6 @@ from aiogram import BaseMiddleware
 from aiogram.types import Message
 from typing import Any, Awaitable, Callable, Dict
 
-from constants.button_text import ButtonText as BT
 from database.models import User
 
 

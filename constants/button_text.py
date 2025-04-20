@@ -5,7 +5,7 @@ class ButtonText(StrEnum):
     MAIN_MENU = "🏠 Главное меню"
     SEARCH_POST = "🔎 Хочу помочь"
     ADD_POST = "💓 Получить помощь"
-    ALL_POSTS = "📚 Все посты"
+    ALL_POSTS = "🌐 Все посты"
     FAVOURITE = "♥ Избранное"
     ADD_TO_FAVOURITE = "🤍"
     ADDED_TO_FAVOURITE = "♥"
