@@ -6,7 +6,7 @@ class User(models.Model):
     username = fields.CharField(max_length=32, null=True)
     name = fields.CharField(max_length=129)  # 128 max chars + spacebar
     is_active = fields.BooleanField(default=True)
-    points = fields.IntField(default=3)
+    points = fields.IntField(default=5)
 
     def __str__(self):
         return f"{self.name} - {self.username} - {self.tg_id}"
