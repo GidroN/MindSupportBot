@@ -98,6 +98,16 @@ async def moderate_posts(message: Message, state: FSMContext):
     await send_user_change_post_info(posts, message)
 
 
+@router.message(Command("help"))
+async def help_command(message: Message):
+    await message.answer("Команды для использования бота:\n"
+                         "<b>/menu</b> - Переход в главное меню\n"
+                         "<b>/profile</b> - Просмотр профиля\n"
+                         "<b>/my_posts</b> - Просмотр созданных постов\n"
+                         "<b>/search_posts</b> - Поиск постов\n"
+                         "<b>/stats</b> - Просмотр статистики\n"
+                         "<b>/help - Просмотр данного сообщения.</b>")
+
 
 @router.message()
 async def handle_all_messages(message: Message):
