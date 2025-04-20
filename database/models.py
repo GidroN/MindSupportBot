@@ -11,11 +11,11 @@ class User(models.Model):
     def __str__(self):
         return f"{self.name} - {self.username} - {self.tg_id}"
 
-    def save(self, *args, **kwargs):
+    async def save(self, *args, **kwargs):
         if self.points < 0:
             self.points = 0
 
-        super().save(*args, **kwargs)
+        await super().save(*args, **kwargs)
 
 
 class Category(models.Model):
