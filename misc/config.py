@@ -6,9 +6,9 @@ from redis.asyncio.client import Redis
 hostname = socket.gethostname()
 
 if hostname == "gidron-pc":
-    filename = '.env.local'
+    filename = ".env.local"
 else:
-    filename = '.env.prod'
+    filename = ".env.prod"
 
 load_dotenv(filename)
 

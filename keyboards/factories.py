@@ -10,7 +10,7 @@ class ChooseCategoryCallback(CallbackData, prefix="choose_search_category"):
     search_type: SearchPostType
 
 
-class PaginationCallback(CallbackData, prefix='pag'):
+class PaginationCallback(CallbackData, prefix="pag"):
     page: int
     markup: PaginationMarkup
     action: PaginationAction

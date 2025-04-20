@@ -13,7 +13,7 @@ router = Router(name="user_state_processes")
 
 @router.message(AddPostForm.enter_text, F.text == BT.CANCEL)
 async def process_add_post_form_enter_text_cancel(message: Message, state: FSMContext):
-    await message.answer('Отменено.', reply_markup=main_menu_user_kb)
+    await message.answer("Отменено.", reply_markup=main_menu_user_kb)
     await state.set_state()
 
 @router.message(AddPostForm.enter_text, F.text)
@@ -22,17 +22,17 @@ async def process_add_post_form_enter_text(message: Message, state: FSMContext):
     user = await User.get(tg_id=tg_id)
     data = await state.get_data()
 
-    category_id = data['category_id']
+    category_id = data["category_id"]
     category = await Category.get(id=category_id)
 
     if await Post.filter(content=message.text).exists():
-        await message.answer('Данный пост уже добавлен!', reply_markup=cancel_button_kb)
+        await message.answer("Данный пост уже добавлен!", reply_markup=cancel_button_kb)
         return
 
     text = message.text
     await Post.create(content=text, user=user, category=category)
-    await message.answer('Пост успешно добавлен. Если ваш пост не вмещается в одно сообщение,'
-                         ' то можете использовать telgra.ph и просто прислать сюда ссылку на статью.', reply_markup=main_menu_user_kb)
+    await message.answer("Пост успешно добавлен. Если ваш пост не вмещается в одно сообщение,"
+                         " то можете использовать telgra.ph и просто прислать сюда ссылку на статью.", reply_markup=main_menu_user_kb)
 
     user = await User.get(tg_id=message.from_user.id)
     user.points += Points.HELP
@@ -48,7 +48,7 @@ async def process_add_post_form_text_invalid(message: Message, state: FSMContext
 
 @router.message(MessageUserForm.enter_message, F.text == BT.CANCEL)
 async def process_message_user_form_enter_message_cancel(message: Message, state: FSMContext):
-    await message.answer('Отменено.', reply_markup=main_menu_user_kb)
+    await message.answer("Отменено.", reply_markup=main_menu_user_kb)
     await state.set_state()
 
 

@@ -59,8 +59,8 @@ async def need_help(message: Message, state: FSMContext):
         return
 
     await state.set_state(AddPostForm.category)
-    await message.answer('Вы перешли к выбору категории.', reply_markup=menu_button_kb)
-    await message.answer('Чтобы написать сообщение, сначала выберите категорию, в которую хотите добавить:',
+    await message.answer("Вы перешли к выбору категории.", reply_markup=menu_button_kb)
+    await message.answer("Чтобы написать сообщение, сначала выберите категорию, в которую хотите добавить:",
                          reply_markup=await categories(show_all=False))
 
 
@@ -76,9 +76,9 @@ async def user_stats(message: Message):
     tg_id = message.from_user.id
     user = await User.get(tg_id=tg_id)
     published_posts = await Post.filter(user=user).count()
-    await message.answer(f'🧑 <b>Ваша статистика</b>\n'
-                         f'🎡 Баллы: <b>{user.points}</b>\n'
-                         f'📚 Опубликованные посты: <b>{published_posts}</b>\n', reply_markup=user_how_to_earn_points_kb)
+    await message.answer(f"🧑 <b>Ваша статистика</b>\n"
+                         f"🎡 Баллы: <b>{user.points}</b>\n"
+                         f"📚 Опубликованные посты: <b>{published_posts}</b>\n", reply_markup=user_how_to_earn_points_kb)
 
 
 @router.message(Command("my_posts"))
@@ -90,12 +90,13 @@ async def moderate_posts(message: Message, state: FSMContext):
     post_list_ids = await Post.filter(user=user).values_list("id", flat=True)
 
     if not posts:
-        await message.answer('Вы пока что не добавили ни одного поста. Чтобы добавить пост напишите /add_post')
+        await message.answer("Вы пока что не добавили ни одного поста. Чтобы добавить пост напишите /add_post")
         return
 
     await state.update_data(post_list_ids=post_list_ids)
     await message.answer(f"У вас {len(posts)} созданных постов", reply_markup=profile_button_kb)
     await send_user_change_post_info(posts, message)
+
 
 
 @router.message()

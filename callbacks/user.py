@@ -26,7 +26,7 @@ async def choose_category_to_add_post(callback: CallbackQuery, callback_data: Ch
     await state.update_data(category_id=category_id)
 
     await callback.answer(f"Вы перешли в категорию {category.name}")
-    await callback.message.answer(f'Отлично. Теперь пришлите название поста', reply_markup=cancel_button_kb)
+    await callback.message.answer(f"Отлично. Теперь пришлите название поста", reply_markup=cancel_button_kb)
 
 
 @router.callback_query(SearchPostForm.category, ChooseCategoryCallback.filter())
@@ -71,11 +71,11 @@ async def process_search_result(callback: CallbackQuery, callback_data: Paginati
 
     if page < 0:
         page = 0
-        await callback.answer('Это первая запись.')
+        await callback.answer("Это первая запись.")
         return
     elif page >= len(result):
         page = len(result) - 1
-        await callback.answer('Это последняя запись.')
+        await callback.answer("Это последняя запись.")
         return
 
     if callback_data.markup == PaginationMarkup.VIEWER:
@@ -109,7 +109,7 @@ async def change_post_info(callback: CallbackQuery, callback_data: ChangePostInf
         await state.set_state(EditPostForm.category)
 
     else: # delete
-        await callback.message.answer('Вы уверены, что хотите удалить этот пост?', reply_markup=confirm_post_delete_kb)
+        await callback.message.answer("Вы уверены, что хотите удалить этот пост?", reply_markup=confirm_post_delete_kb)
         await state.set_state(DeletePostForm.confirm)
         await state.update_data(post_id=post_id, message_id=callback.message.message_id)
 
@@ -125,7 +125,7 @@ async def delete_post(callback: CallbackQuery, callback_data: DeletePostCallback
     post = await Post.get(id=post_id)
 
     if action == DeletePostAction.CANCEL:
-        await callback.answer('Отменено.')
+        await callback.answer("Отменено.")
         await callback.message.delete()
     else:  # action == CONFIRM
         await post.delete()
@@ -134,7 +134,7 @@ async def delete_post(callback: CallbackQuery, callback_data: DeletePostCallback
             message_id=message_to_delete,
         )
         await callback.message.delete()
-        await callback.answer('Пост успешно удален!')
+        await callback.answer("Пост успешно удален!")
 
         post_list_ids.remove(post_id)
 
