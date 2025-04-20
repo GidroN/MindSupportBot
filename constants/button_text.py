@@ -20,6 +20,6 @@ class ButtonText(StrEnum):
     CHANGE_POST_NAME = "✏ Изменить название"
     CHANGE_CATEGORY = "✏ Изменить категорию"
     MODERATE_POST = "🛠 Управлять постами"
-    DELETE_POST = "🗑 Удалить"
+    DELETE_POST = "🗑"
     HOW_TO_EARN_POINTS = "❓ Как получить баллы?"
 
