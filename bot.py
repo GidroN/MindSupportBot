@@ -41,6 +41,9 @@ if __name__ == '__main__':
         asyncio.run(main())
     except KeyboardInterrupt:
         logging.info('Bot stopped successfully.')
-    except (TelegramNetworkError, ConnectionError, SystemExit) as e:
+    except ConnectionError:
+        logging.info("Error during connecting to redis")
+        exit(1)
+    except (TelegramNetworkError, SystemExit) as e:
         logging.warning(f'Bot stopped during and error: {e}')
         exit(1)
