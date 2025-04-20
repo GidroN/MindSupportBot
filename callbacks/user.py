@@ -105,7 +105,8 @@ async def change_post_info(callback: CallbackQuery, callback_data: ChangePostInf
     post_id = callback_data.post_id
 
     if change_item == PostChangeItem.CATEGORY:
-        await callback.message.answer("Выберите категорию", reply_markup=await categories(cancel=True))
+        await callback.message.answer("Выберите категорию",
+                                      reply_markup=await categories(cancel=True, show_number_items=False))
         await state.set_state(EditPostForm.category)
 
     else: # delete

@@ -10,7 +10,7 @@ from .factories import ChooseCategoryCallback, PaginationCallback, MessageUserCa
     ChangePostInfoCallback
 
 
-async def categories(show_all: bool = True, cancel: bool = False):
+async def categories(show_all: bool = True, cancel: bool = False, show_number_items: bool = True):
     all_categories = await Category.filter()
     keyboard = InlineKeyboardBuilder()
 
@@ -27,9 +27,10 @@ async def categories(show_all: bool = True, cancel: bool = False):
 
     for item in all_categories:
         category_items = await Post.filter(category=item).count()
+        text = f"{item.name} ({category_items})" if show_number_items else f"{item.name}"
         keyboard.add(
             InlineKeyboardButton(
-                text=f"{item.name} ({category_items})",
+                text=text,
                 callback_data=ChooseCategoryCallback(
                     category_id=item.id,
                     search_type=SearchPostType.BY_CATEGORY

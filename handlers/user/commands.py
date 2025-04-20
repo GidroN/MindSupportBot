@@ -61,7 +61,7 @@ async def need_help(message: Message, state: FSMContext):
     await state.set_state(AddPostForm.category)
     await message.answer("Вы перешли к выбору категории.", reply_markup=menu_button_kb)
     await message.answer("Чтобы написать сообщение, сначала выберите категорию, в которую хотите добавить:",
-                         reply_markup=await categories(show_all=False))
+                         reply_markup=await categories(show_all=False, show_number_items=False))
 
 
 @router.message(Command("profile"))
