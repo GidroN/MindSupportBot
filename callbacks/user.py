@@ -57,6 +57,8 @@ async def choose_category_to_search_post(callback: CallbackQuery, callback_data:
 
 @router.callback_query(default_state, PaginationCallback.filter())
 async def process_search_result(callback: CallbackQuery, callback_data: PaginationCallback, state: FSMContext):
+    await callback.answer()
+
     data = await state.get_data()
     ids = data["post_list_ids"]
     result = await Post.filter(id__in=ids).prefetch_related("user", "category")
