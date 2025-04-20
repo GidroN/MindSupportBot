@@ -17,7 +17,7 @@ async def categories(show_all: bool = True, cancel: bool = False, show_number_it
     if show_all:
         keyboard.add(
             InlineKeyboardButton(
-                text=BT.ALL_POSTS,
+                text=BT.ALL_POSTS + f" ({await Post.all().count()})",
                 callback_data=ChooseCategoryCallback(
                     category_id=-1,
                     search_type=SearchPostType.ALL_POSTS
