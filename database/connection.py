@@ -27,11 +27,11 @@ TORTOISE_ORM_CONFIG = {
 }
 
 
-async def init(generate_schemas: bool = True):
+async def init_database(generate_schemas: bool = True):
     await Tortoise.init(TORTOISE_ORM_CONFIG)
     if generate_schemas:
         await Tortoise.generate_schemas()
 
 
 if __name__ == "__main__":
-    run_async(init())
+    run_async(init_database())

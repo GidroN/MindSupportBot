@@ -7,7 +7,7 @@ from aiogram.exceptions import TelegramNetworkError
 from aiogram.fsm.storage.redis import RedisStorage
 from tortoise import Tortoise
 
-from database.connection import init
+from database.connection import init_database
 from misc.config import BOT_TOKEN, redis_instance
 from misc.middlewares import CheckUserExistsMiddleware
 from misc.routers import router
@@ -18,7 +18,7 @@ async def main():
     logging.basicConfig(level=logging.INFO)
 
     # init db
-    await init()
+    await init_database()
 
     # set up bot
     default = DefaultBotProperties(parse_mode='HTML')
