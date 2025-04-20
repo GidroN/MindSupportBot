@@ -15,11 +15,6 @@ class PaginationCallback(CallbackData, prefix='pag'):
     action: PaginationAction
 
 
-class FavouriteCallback(CallbackData, prefix="fav"):
-    page: int
-    post_id: int
-
-
 class MessageUserCallback(CallbackData, prefix="advice"):
     to_user: str
     from_user: str

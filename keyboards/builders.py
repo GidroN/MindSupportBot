@@ -6,7 +6,7 @@ from constants.callbacks import CallbackConstants
 from constants.factory import PaginationAction, PostChangeItem, PaginationMarkup
 
 from database.models import Post, Category
-from .factories import ChooseCategoryCallback, FavouriteCallback, PaginationCallback, MessageUserCallback, \
+from .factories import ChooseCategoryCallback, PaginationCallback, MessageUserCallback, \
     ChangePostInfoCallback
 
 
@@ -36,25 +36,9 @@ async def categories(cancel: bool = False):
 def post_kb(post_id: int,
             to_user: str,
             from_user: str,
-            favourite: bool = False,
             page: int = 0):
     keyboard = InlineKeyboardBuilder()
-    is_favourite = BT.ADDED_TO_FAVOURITE if favourite else BT.ADD_TO_FAVOURITE
     keyboard.add(
-        InlineKeyboardButton(
-            text=is_favourite,
-            callback_data=FavouriteCallback(
-                page=page,
-                post_id=post_id,
-            ).pack()
-        ),
-        InlineKeyboardButton(
-            text=BT.PREV,
-            callback_data=PaginationCallback(
-                page=page,
-                action=PaginationAction.PREV
-            ).pack()
-        ),
         InlineKeyboardButton(
             text=BT.NEXT,
             callback_data=PaginationCallback(

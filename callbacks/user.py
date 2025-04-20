@@ -49,29 +49,6 @@ async def choose_category_to_search_post(callback: CallbackQuery, callback_data:
     await state.set_state()
     await state.update_data(post_list_ids=posts_list_ids)
 
-@router.callback_query(default_state, FavouriteCallback.filter())
-async def process_add_to_favourites(callback: CallbackQuery, callback_data: FavouriteCallback,
-                                    state: FSMContext):
-    post_id = callback_data.post_id
-    page = callback_data.page
-    user_tg_id = callback.from_user.id
-
-    post = await Post.get(id=post_id).prefetch_related("user")
-    user = await User.get(tg_id=user_tg_id)
-    favourited_by_user = await check_post_in_favourites(post.id, user_tg_id)
-
-    if favourited_by_user:
-        reply_markup = post_kb(post.id, user.tg_id, post.user.tg_id, False, page)
-        await UserFavouritePost.filter(post=post, user=user).delete()
-        await callback.answer('Удален из сохраненных.')
-
-        await callback.message.edit_reply_markup(reply_markup=reply_markup)
-    else:
-        await UserFavouritePost.create(post=post, user=user)
-        await callback.answer('Добавлен в сохраненные.')
-        reply_markup = post_kb(post.id, user.tg_id, post.user.tg_id, True, page)
-        await callback.message.edit_reply_markup(reply_markup=reply_markup)
-
 
 @router.callback_query(default_state, PaginationCallback.filter())
 async def process_search_result(callback: CallbackQuery, callback_data: PaginationCallback, state: FSMContext):

@@ -7,7 +7,6 @@ class User(models.Model):
     name = fields.CharField(max_length=129)  # 128 max chars + spacebar
     is_active = fields.BooleanField(default=True)
     points = fields.IntField(default=3)
-    favourite_posts = fields.ManyToManyField("models.Post", related_name="favourite_by", through="userfavouritepost")
 
     def __str__(self):
         return f"{self.name} - {self.username} - {self.tg_id}"
@@ -34,11 +33,3 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
-
-
-class UserFavouritePost(models.Model):
-    user = fields.ForeignKeyField('models.User', on_delete=fields.CASCADE, related_name='user_favourites')
-    post = fields.ForeignKeyField('models.Post', on_delete=fields.CASCADE, related_name='recipe_favourites')
-
-    def __str__(self):
-        return f"{self.user.name} - {self.post.name}"
