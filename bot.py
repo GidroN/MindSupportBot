@@ -9,6 +9,7 @@ from tortoise import Tortoise
 
 from database.connection import init
 from misc.config import BOT_TOKEN, redis_instance
+from misc.middlewares import CheckUserExistsMiddleware
 from misc.routers import router
 
 
@@ -25,6 +26,7 @@ async def main():
     storage = RedisStorage(redis_instance)
     dp = Dispatcher(storage=storage)
     dp.include_router(router)
+    dp.message.outer_middleware(CheckUserExistsMiddleware())
 
     await bot.delete_webhook(drop_pending_updates=True)
     try:
