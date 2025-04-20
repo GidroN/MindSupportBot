@@ -1,0 +1,28 @@
+version: "3"
+services:
+#  bot:
+#    build: .
+#    restart: always
+#    depends_on:
+#      - postgres
+
+  redis:
+    image: redis:7
+    ports:
+      - "6378:6379"
+
+  postgres:
+    image: postgres:16
+    env_file:
+      - .env.local
+    environment:
+      POSTGRES_USER: ${PG_USER}
+      POSTGRES_PASSWORD: ${PG_PASSWORD}
+      POSTGRES_DB: ${PG_DATABASE}
+    ports:
+      - "5431:5432"
+    volumes:
+      - postgres_data_mind_bot:/var/lib/postgres/data
+
+volumes:
+  postgres_data_mind_bot:
