@@ -64,15 +64,16 @@ async def process_message_user_form_enter_message(message: Message, state: FSMCo
         post_id = data.get("post_id")
         post = await Post.get(id=post_id)
 
-        text = f"Вам пришло сообщение к посту!\n<i>{post.content}<i>"
+        text = f"Вам пришло сообщение к посту:\n<i>{post.content}</i>"
 
         if len(post.content) > 300:
-            text = f"Вам пришло сообщение к посту!\n<i>{post.content[:301]}...</i>"
+            text = f"Вам пришло сообщение к посту:\n<i>{post.content[:301]}...</i>"
 
         user = await User.get(tg_id=message.from_user.id)
-        user.points += 3
+        user.points += Points.HELP
         await user.save()
-        await message.answer("Спасибо! Вам начислено 3 балла за поддержку.")
+        await message.answer(f"Спасибо! Вам начислено <b>{abs(Points.HELP)}</b> балла за поддержку.",
+                             reply_markup=main_menu_user_kb)
 
     await message.bot.send_message(chat_id=to_user,
                                    text=text,
