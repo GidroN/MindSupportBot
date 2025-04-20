@@ -1,8 +1,9 @@
-from aiogram import Router, F
+from aiogram import Router, F, Bot
 from aiogram.filters import CommandStart, Command
 from aiogram.fsm.context import FSMContext
-from aiogram.types import Message
+from aiogram.types import Message, ForceReply
 
+from constants.point_counter import Points
 from database.models import User, Post
 from constants.button_text import ButtonText as BT
 from keyboards.inline import user_how_to_earn_points_kb
@@ -48,10 +49,19 @@ async def wanna_help(message: Message, state: FSMContext):
 @router.message(Command("add_post"))
 @router.message(F.text == BT.ADD_POST)
 async def need_help(message: Message, state: FSMContext):
+    tg_id = message.from_user.id
+    user = await User.get(tg_id=tg_id)
+
+    if user.points < abs(Points.ADD_POST):
+        await message.answer(f"У вас недостаточно баллов, для добавления поста.\n "
+                             f"У вас <b>{user.points}</b>, а необходимо <b>{Points.ADD_POST}</b>.\n "
+                             f"Для информации - /stats")
+        return
+
     await state.set_state(AddPostForm.category)
     await message.answer('Вы перешли к выбору категории.', reply_markup=menu_button_kb)
     await message.answer('Чтобы написать сообщение, сначала выберите категорию, в которую хотите добавить:',
-                         reply_markup=await categories())
+                         reply_markup=await categories(show_all=False))
 
 
 @router.message(Command("profile"))
@@ -64,13 +74,11 @@ async def profile(message: Message):
 @router.message(F.text == BT.STATISTICS)
 async def user_stats(message: Message):
     tg_id = message.from_user.id
-    user = await User.get(tg_id=tg_id).prefetch_related('favourite_posts')
-    favourite_posts = await user.favourite_posts.all().count()
+    user = await User.get(tg_id=tg_id)
     published_posts = await Post.filter(user=user).count()
     await message.answer(f'🧑 <b>Ваша статистика</b>\n'
                          f'🎡 Баллы: <b>{user.points}</b>\n'
-                         f'📚 Опубликованные посты: <b>{published_posts}</b>\n'
-                         f'♥ Любимые посты: <b>{favourite_posts}</b>', reply_markup=user_how_to_earn_points_kb)
+                         f'📚 Опубликованные посты: <b>{published_posts}</b>\n', reply_markup=user_how_to_earn_points_kb)
 
 
 @router.message(Command("my_posts"))

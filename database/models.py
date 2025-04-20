@@ -26,10 +26,13 @@ class Category(models.Model):
 
 
 class Post(models.Model):
-    title = fields.CharField(max_length=255)
-    url = fields.CharField(max_length=300)
+    content = fields.TextField()
     category = fields.ForeignKeyField("models.Category", on_delete=fields.SET_NULL, related_name="posts", null=True)
     user = fields.ForeignKeyField("models.User", on_delete=fields.CASCADE, related_name="posts")
+    created_at = fields.DatetimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.title
+        return str(self.id)
+
+    class Meta:
+        ordering = ["-created_at"]

@@ -3,26 +3,42 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from constants.button_text import ButtonText as BT
 from constants.callbacks import CallbackConstants
-from constants.factory import PaginationAction, PostChangeItem, PaginationMarkup
+from constants.factory import PaginationAction, PostChangeItem, PaginationMarkup, SearchPostType
 
 from database.models import Post, Category
 from .factories import ChooseCategoryCallback, PaginationCallback, MessageUserCallback, \
     ChangePostInfoCallback
 
 
-async def categories(cancel: bool = False):
+async def categories(show_all: bool = True, cancel: bool = False):
     all_categories = await Category.filter()
     keyboard = InlineKeyboardBuilder()
+
+    if show_all:
+        keyboard.add(
+            InlineKeyboardButton(
+                text=BT.ALL_POSTS,
+                callback_data=ChooseCategoryCallback(
+                    category_id=-1,
+                    search_type=SearchPostType.ALL_POSTS
+                ).pack()
+            )
+        )
 
     for item in all_categories:
         category_items = await Post.filter(category=item).count()
         keyboard.add(
             InlineKeyboardButton(
                 text=f"{item.name} ({category_items})",
-                callback_data=ChooseCategoryCallback(category_id=item.id).pack()
+                callback_data=ChooseCategoryCallback(
+                    category_id=item.id,
+                    search_type=SearchPostType.BY_CATEGORY
+                ).pack()
             )
         )
-    keyboard.adjust(2)
+
+    keyboard.adjust(1, 2)
+
     if cancel:
         keyboard.row(
             InlineKeyboardButton(
@@ -99,13 +115,6 @@ def change_post_kb(post_id: int, page: int = 0):
             ).pack()
         ),
         InlineKeyboardButton(
-            text=BT.CHANGE_POST_NAME,
-            callback_data=ChangePostInfoCallback(
-                post_id=post_id,
-                change_item=PostChangeItem.NAME
-            ).pack()
-        ),
-        InlineKeyboardButton(
             text=BT.CHANGE_CATEGORY,
             callback_data=ChangePostInfoCallback(
                 post_id=post_id,
@@ -121,4 +130,4 @@ def change_post_kb(post_id: int, page: int = 0):
         )
     )
 
-    return keyboard.adjust(2, 2, 1).as_markup()
+    return keyboard.adjust(2, 1, 1).as_markup()

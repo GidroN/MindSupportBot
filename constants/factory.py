@@ -7,7 +7,6 @@ class PaginationAction(StrEnum):
 
 
 class PostChangeItem(StrEnum):
-    NAME = "name"
     CATEGORY = "category"
     DELETE = "delete"
 
@@ -20,3 +19,8 @@ class DeletePostAction(StrEnum):
 class PaginationMarkup(StrEnum):
     VIEWER = "viewer"
     OWNER = "owner"
+
+
+class SearchPostType(StrEnum):
+    ALL_POSTS = "all-posts"
+    BY_CATEGORY = "by-category"

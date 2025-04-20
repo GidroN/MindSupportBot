@@ -7,7 +7,7 @@ class SearchPostForm(StatesGroup):
 
 class AddPostForm(StatesGroup):
     category = State()
-    enter_url = State()
+    enter_text = State()
 
 
 class MessageUserForm(StatesGroup):
@@ -15,7 +15,6 @@ class MessageUserForm(StatesGroup):
 
 
 class EditPostForm(StatesGroup):
-    get_user_input = State()
     category = State()
 
 

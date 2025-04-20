@@ -2,11 +2,12 @@ from typing import Optional
 
 from aiogram.filters.callback_data import CallbackData
 
-from constants.factory import PaginationAction, PostChangeItem, DeletePostAction, PaginationMarkup
+from constants.factory import PaginationAction, PostChangeItem, DeletePostAction, PaginationMarkup, SearchPostType
 
 
 class ChooseCategoryCallback(CallbackData, prefix="choose_search_category"):
     category_id: int
+    search_type: SearchPostType
 
 
 class PaginationCallback(CallbackData, prefix='pag'):

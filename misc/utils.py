@@ -1,18 +1,7 @@
-import requests
 from aiogram.types import CallbackQuery, Message
-from bs4 import BeautifulSoup
 
 from database.models import User, Post
 from keyboards.builders import post_kb, change_post_kb
-
-
-def get_name_from_telegraph_article(url: str) -> str:
-    page = requests.get(url)
-    soup = BeautifulSoup(page.text, "html.parser")
-    title = soup.find("title").text
-    formatted_text = title.split('–')[0]
-
-    return formatted_text
 
 
 async def send_user_post_info(posts_list: list[Post],
@@ -22,9 +11,10 @@ async def send_user_post_info(posts_list: list[Post],
     post = posts_list[page]
 
     text = f"""Пост {page + 1}/{len(posts_list)}
-<b>{post.title}</b>
+<i>{post.created_at.strftime("%d.%m.%Y")}</i>
 Категория: {post.category.name}
-{post.url}"""
+
+{post.content}"""
 
     await message.answer(text, reply_markup=post_kb(post_id=post.id,
                                                     to_user=post.user.tg_id,
@@ -39,9 +29,11 @@ async def send_user_change_post_info(posts_list: list[Post],
     post = posts_list[page]
 
     text = f"""Пост {page + 1}/{len(posts_list)}
-<b>{post.title}</b>
+<i>{post.created_at}</i>
+<i>{post.created_at.strftime("%d.%m.%Y")}</i>
 Категория: {post.category.name}
-{post.url}"""
+
+{post.content}"""
 
     reply_markup = change_post_kb(post_id=post.id, page=page)
 

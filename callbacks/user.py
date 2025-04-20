@@ -4,15 +4,15 @@ from aiogram.fsm.state import default_state
 from aiogram.types import CallbackQuery
 
 from constants.callbacks import CallbackConstants
-from constants.factory import PaginationMarkup, DeletePostAction, PostChangeItem
-from database.models import Category, Post, User, UserFavouritePost
+from constants.factory import PaginationMarkup, DeletePostAction, PostChangeItem, SearchPostType
+from database.models import Category, Post, User
 from keyboards.builders import post_kb, categories
-from keyboards.factories import ChooseCategoryCallback, PaginationCallback, FavouriteCallback, MessageUserCallback, \
+from keyboards.factories import ChooseCategoryCallback, PaginationCallback, MessageUserCallback, \
     DeletePostCallback, ChangePostInfoCallback
 from keyboards.inline import confirm_post_delete_kb
 from keyboards.reply import cancel_button_kb, profile_user_kb
 from misc.states import SearchPostForm, AddPostForm, MessageUserForm, DeletePostForm, EditPostForm
-from misc.utils import send_user_post_info, check_post_in_favourites, send_user_change_post_info
+from misc.utils import send_user_post_info, send_user_change_post_info
 
 router = Router(name="user_callbacks")
 
@@ -22,29 +22,34 @@ async def choose_category_to_add_post(callback: CallbackQuery, callback_data: Ch
     category_id = callback_data.category_id
     category = await Category.get(id=category_id)
 
-    await state.set_state(AddPostForm.enter_url)
+    await state.set_state(AddPostForm.enter_text)
     await state.update_data(category_id=category_id)
 
     await callback.answer(f"Вы перешли в категорию {category.name}")
-    await callback.message.answer(f'Отлично, теперь чтобы добавить пост, вам необходимо прислать ссылку на статью в telegra.ph\n\n'
-                         f'telegra.ph - Удобный простой редактор статей..\n'
-                         f'Подробнее про telegra.ph - https://telegra.ph/telegraph-01-25', reply_markup=cancel_button_kb)
+    await callback.message.answer(f'Отлично. Теперь пришлите название поста', reply_markup=cancel_button_kb)
 
 
 @router.callback_query(SearchPostForm.category, ChooseCategoryCallback.filter())
 async def choose_category_to_search_post(callback: CallbackQuery, callback_data: ChooseCategoryCallback, state: FSMContext):
     category_id = callback_data.category_id
-    category = await Category.get(id=category_id)
+    category = await Category.get_or_none(id=category_id)
 
-    if await Post.filter(category=category).count() == 0:
-        await callback.answer("В данной категории пока что нет постов.", show_alert=True)
-        return
+    if callback_data.search_type == SearchPostType.ALL_POSTS:
+        posts_list = await Post.all().prefetch_related("category", "user")
+        posts_list_ids = await Post.all().values_list("id", flat=True)
+        await callback.answer(f"Вы перешли к просмотру всех постов")
 
-    await callback.answer(f"Вы перешли в категорию {category.name}")
-    await state.update_data(category_id=category_id)
+    else: # callback_data.search_type == SearchPostType.BY_CATEGORY
+        if await Post.filter(category=category).count() == 0:
+            await callback.answer("В данной категории пока что нет постов.", show_alert=True)
+            return
 
-    posts_list = await Post.filter(category=category).prefetch_related("user", "category")
-    posts_list_ids = await Post.filter(category=category).values_list("id", flat=True)
+        await callback.answer(f"Вы перешли в категорию {category.name}")
+        await state.update_data(category_id=category_id)
+
+        posts_list = await Post.filter(category=category).prefetch_related("user", "category")
+        posts_list_ids = await Post.filter(category=category).values_list("id", flat=True)
+
     await send_user_post_info(posts_list=posts_list, callback=callback)
     await state.set_state()
     await state.update_data(post_list_ids=posts_list_ids)
@@ -99,12 +104,8 @@ async def change_post_info(callback: CallbackQuery, callback_data: ChangePostInf
     change_item = callback_data.change_item
     post_id = callback_data.post_id
 
-    if change_item == PostChangeItem.NAME:
-        await callback.message.answer("Введите новое название для поста", reply_markup=cancel_button_kb)
-        await state.set_state(EditPostForm.get_user_input)
-
-    elif change_item == PostChangeItem.CATEGORY:
-        await callback.message.answer("Выберите категорию", reply_markup=await categories(True))
+    if change_item == PostChangeItem.CATEGORY:
+        await callback.message.answer("Выберите категорию", reply_markup=await categories(cancel=True))
         await state.set_state(EditPostForm.category)
 
     else: # delete
