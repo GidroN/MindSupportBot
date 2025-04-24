@@ -5,6 +5,7 @@ from aiogram.types import Message, LinkPreviewOptions
 from constants.button_text import ButtonText as BT
 from constants.point_counter import Points
 from database.models import User, Post, Category
+from integrations.chatgpt_openai import moderate_text_openai
 from keyboards.builders import message_user_kb
 from keyboards.reply import main_menu_user_kb, cancel_button_kb, remove_kb, profile_button_kb
 from misc.states import AddPostForm, MessageUserForm, EditPostForm
@@ -28,6 +29,11 @@ async def process_add_post_form_enter_text(message: Message, state: FSMContext):
     if await Post.filter(content=message.text).exists():
         await message.answer("Данный пост уже добавлен!", reply_markup=cancel_button_kb)
         return
+
+    # is_flagged = moderate_text_openai(message.text)
+    # if is_flagged:
+    #     await message.answer("Пожалуйста уберите из текста нецензурную брань и попробуйте еще раз.")
+    #     return
 
     text = message.text
     await Post.create(content=text, user=user, category=category)

@@ -23,4 +23,7 @@ PG_DATABASE = os.getenv("PG_DATABASE")
 REDIS_HOST = os.getenv("REDIS_HOST")
 REDIS_PORT = os.getenv("REDIS_PORT")
 
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+OPENAI_PROJECT_KEY = os.getenv("OPENAI_API_PROJECT_KEY")
+
 redis_instance = Redis(host=REDIS_HOST, port=int(REDIS_PORT))
