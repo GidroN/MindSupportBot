@@ -20,3 +20,7 @@ class EditPostForm(StatesGroup):
 
 class DeletePostForm(StatesGroup):
     confirm = State()
+
+
+class RegisterUserForm(StatesGroup):
+    agreement = State()

@@ -25,8 +25,8 @@ async def choose_category_to_add_post(callback: CallbackQuery, callback_data: Ch
     await state.set_state(AddPostForm.enter_text)
     await state.update_data(category_id=category_id)
 
-    await callback.answer(f"Вы перешли в категорию {category.name}")
-    await callback.message.answer(f"Отлично. Теперь пришлите пост", reply_markup=cancel_button_kb)
+    await callback.answer(f"Ты перешел в категорию {category.name}")
+    await callback.message.answer(f"Отлично. Теперь пришли пост", reply_markup=cancel_button_kb)
 
 
 @router.callback_query(SearchPostForm.category, ChooseCategoryCallback.filter())
@@ -37,14 +37,14 @@ async def choose_category_to_search_post(callback: CallbackQuery, callback_data:
     if callback_data.search_type == SearchPostType.ALL_POSTS:
         posts_list = await Post.all().prefetch_related("category", "user")
         posts_list_ids = await Post.all().values_list("id", flat=True)
-        await callback.answer(f"Вы перешли к просмотру всех постов")
+        await callback.answer(f"Ты перешел к просмотру всех постов")
 
     else: # callback_data.search_type == SearchPostType.BY_CATEGORY
         if await Post.filter(category=category).count() == 0:
             await callback.answer("В данной категории пока что нет постов.", show_alert=True)
             return
 
-        await callback.answer(f"Вы перешли в категорию {category.name}")
+        await callback.answer(f"Ты перешел в категорию {category.name}")
         await state.update_data(category_id=category_id)
 
         posts_list = await Post.filter(category=category).prefetch_related("user", "category")
@@ -94,8 +94,8 @@ async def message_user_callback(callback: CallbackQuery, callback_data: MessageU
     post_id = callback_data.post_id
     reply_to_message_id = callback_data.reply_to_message_id
 
-    await callback.answer("Вы отправляете сообщение автору")
-    await callback.message.answer("Наберите сообщение, которое хотите отправить автору.", reply_markup=cancel_button_kb)
+    await callback.answer("Ты отправляете сообщение автору")
+    await callback.message.answer("Набери сообщение, которое хочешь отправить автору.", reply_markup=cancel_button_kb)
     await state.set_state(MessageUserForm.enter_message)
     await state.update_data(to_user=to_user, post_id=post_id, from_user=from_user, reply_to_message_id=reply_to_message_id)
 
@@ -108,12 +108,12 @@ async def change_post_info(callback: CallbackQuery, callback_data: ChangePostInf
     post_id = callback_data.post_id
 
     if change_item == PostChangeItem.CATEGORY:
-        await callback.message.answer("Выберите категорию",
+        await callback.message.answer("Выбери категорию",
                                       reply_markup=await categories(cancel=True, show_number_items=False))
         await state.set_state(EditPostForm.category)
 
     else: # delete
-        await callback.message.answer("Вы уверены, что хотите удалить этот пост?", reply_markup=confirm_post_delete_kb)
+        await callback.message.answer("Ты уверен, что хочешь удалить этот пост?", reply_markup=confirm_post_delete_kb)
         await state.set_state(DeletePostForm.confirm)
         await state.update_data(post_id=post_id, message_id=callback.message.message_id)
 
@@ -177,3 +177,9 @@ async def change_category_message(callback: CallbackQuery, callback_data: Choose
 async def remove_category_change_message(callback: CallbackQuery, state: FSMContext):
     await callback.message.delete()
     await state.set_state()
+
+
+@router.callback_query(default_state, F.data == CallbackConstants.SEND_HELP_MESSAGE)
+async def send_help_message(callback: CallbackQuery):
+    await callback.answer()
+    await callback.message.answer("По всем возникшим вопроса обращайся к <b>@sbxxnl</b> или к <b>@gidronn</b>.")

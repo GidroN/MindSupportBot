@@ -7,9 +7,30 @@ from constants.point_counter import Points
 from database.models import User, Post, Category
 from keyboards.builders import message_user_kb
 from keyboards.reply import main_menu_user_kb, cancel_button_kb
-from misc.states import AddPostForm, MessageUserForm
+from misc.states import AddPostForm, MessageUserForm, RegisterUserForm
+from integrations.yagpt import moderate_text
+from misc.utils import get_telegraph_page_content
 
 router = Router(name="user_state_processes")
+
+@router.message(RegisterUserForm.agreement, F.text == BT.AGREE_AGREEMENT)
+async def user_agree_agreement(message: Message, state: FSMContext):
+    user = message.from_user
+    tg_id = user.id
+    full_name = user.first_name
+
+    if user.last_name:
+        full_name += " " + user.last_name
+
+    await User.create(tg_id=tg_id, name=full_name, username=user.username)
+    await message.answer('Ты согласился на условия использования бота.', reply_markup=main_menu_user_kb)
+    await state.set_state()
+
+
+@router.message(RegisterUserForm.agreement, F.text != BT.AGREE_AGREEMENT and F.text != '/start')
+async def invalid_user_agree_agreement(message: Message, state: FSMContext):
+    await message.answer('Вы не согласился, с условиями использования!')
+
 
 @router.message(AddPostForm.enter_text, F.text == BT.CANCEL)
 async def process_add_post_form_enter_text_cancel(message: Message, state: FSMContext):
@@ -29,15 +50,21 @@ async def process_add_post_form_enter_text(message: Message, state: FSMContext):
         await message.answer("Данный пост уже добавлен!", reply_markup=cancel_button_kb)
         return
 
-    # is_flagged = moderate_text_openai(message.text)
-    # if is_flagged:
-    #     await message.answer("Пожалуйста уберите из текста нецензурную брань и попробуйте еще раз.")
-    #     return
+    text = message.text
+    if message.text.startswith("https://telegra.ph/"):
+        text = await get_telegraph_page_content(text)
+
+    is_flagged = await moderate_text(text)
+
+    if is_flagged:
+        await message.answer("Пожалуйста, убери из текста нецензурную брань и попробуй еще раз.",
+                             reply_markup=cancel_button_kb)
+        return
 
     text = message.text
     await Post.create(content=text, user=user, category=category)
-    await message.answer("Пост успешно добавлен. Если ваш пост не вмещается в одно сообщение,"
-                         " то можете использовать telgra.ph и просто прислать сюда ссылку на статью.", reply_markup=main_menu_user_kb)
+    await message.answer("Пост успешно добавлен. Если твой пост не вмещается в одно сообщение,"
+                         " то можешь использовать telgra.ph и просто прислать сюда ссылку на статью.", reply_markup=main_menu_user_kb)
 
     user = await User.get(tg_id=message.from_user.id)
     user.points += Points.HELP
@@ -48,7 +75,7 @@ async def process_add_post_form_enter_text(message: Message, state: FSMContext):
 
 @router.message(AddPostForm.enter_text, ~F.text)
 async def process_add_post_form_text_invalid(message: Message, state: FSMContext):
-    await message.answer("Введите текст!")
+    await message.answer("Введи текст!")
 
 
 @router.message(MessageUserForm.enter_message, F.text == BT.CANCEL)
@@ -63,22 +90,33 @@ async def process_message_user_form_enter_message(message: Message, state: FSMCo
     to_user = data["to_user"]
     from_user = data["from_user"]
     reply_to_message_id = data.get("reply_to_message_id", None)
-    text = "Вам пришло сообщение!"
+    text = "Тебе пришло сообщение!"
+
+    is_flagged = await moderate_text(message.text)
+    if is_flagged:
+        await message.bot.send_message(
+            chat_id=511952153,
+            text=message.text
+        )
+        await message.answer("Пожалуйста, убери из текста нецензурную брань и попробуй еще раз.",
+                             reply_markup=cancel_button_kb)
+        return
 
     if data.get("post_id"):
         post_id = data.get("post_id")
         post = await Post.get(id=post_id)
 
-        text = f"Вам пришло сообщение к посту:\n<i>{post.content}</i>"
+        text = f"Тебе пришло сообщение к посту:\n<i>{post.content}</i>"
 
         if len(post.content) > 300:
-            text = f"Вам пришло сообщение к посту:\n<i>{post.content[:301]}...</i>"
+            text = f"Тебе пришло сообщение к посту:\n<i>{post.content[:301]}...</i>"
 
         user = await User.get(tg_id=message.from_user.id)
         user.points += Points.HELP
         await user.save()
-        await message.answer(f"Спасибо! Вам начислено <b>{abs(Points.HELP)}</b> балла за поддержку.",
+        await message.answer(f"Спасибо! Тебе начислено <b>{abs(Points.HELP)}</b> балла за поддержку.",
                              reply_markup=main_menu_user_kb)
+
 
     await message.bot.send_message(chat_id=to_user,
                                    text=text,
@@ -98,4 +136,4 @@ async def process_message_user_form_enter_message(message: Message, state: FSMCo
 
 @router.message(MessageUserForm.enter_message, ~F.text)
 async def process_message_user_form_message_enter(message: Message):
-    await message.answer("Введите текст!")
+    await message.answer("Введи текст!")

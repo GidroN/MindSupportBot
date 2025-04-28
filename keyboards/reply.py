@@ -45,6 +45,9 @@ profile_user_kb = ReplyKeyboardMarkup(
             KeyboardButton(text=BT.MODERATE_POST),
         ],
         [
+            KeyboardButton(text=BT.INFO),
+        ],
+        [
             KeyboardButton(text=BT.MAIN_MENU),
         ],
     ],
@@ -60,4 +63,14 @@ profile_button_kb = ReplyKeyboardMarkup(
     ],
     resize_keyboard=True,
     input_field_placeholder="Вернуться в профиль"
+)
+
+user_agree_agreement_kb = ReplyKeyboardMarkup(
+    keyboard=[
+        [
+            KeyboardButton(text=BT.AGREE_AGREEMENT)
+        ]
+    ],
+    resize_keyboard=True,
+    input_field_placeholder='Соглашение.'
 )
