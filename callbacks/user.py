@@ -26,7 +26,7 @@ async def choose_category_to_add_post(callback: CallbackQuery, callback_data: Ch
     await state.update_data(category_id=category_id)
 
     await callback.answer(f"Вы перешли в категорию {category.name}")
-    await callback.message.answer(f"Отлично. Теперь пришлите название поста", reply_markup=cancel_button_kb)
+    await callback.message.answer(f"Отлично. Теперь пришлите пост", reply_markup=cancel_button_kb)
 
 
 @router.callback_query(SearchPostForm.category, ChooseCategoryCallback.filter())

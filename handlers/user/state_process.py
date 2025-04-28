@@ -5,10 +5,9 @@ from aiogram.types import Message, LinkPreviewOptions
 from constants.button_text import ButtonText as BT
 from constants.point_counter import Points
 from database.models import User, Post, Category
-from integrations.chatgpt_openai import moderate_text_openai
 from keyboards.builders import message_user_kb
-from keyboards.reply import main_menu_user_kb, cancel_button_kb, remove_kb, profile_button_kb
-from misc.states import AddPostForm, MessageUserForm, EditPostForm
+from keyboards.reply import main_menu_user_kb, cancel_button_kb
+from misc.states import AddPostForm, MessageUserForm
 
 router = Router(name="user_state_processes")
 
