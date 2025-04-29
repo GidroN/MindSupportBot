@@ -59,12 +59,17 @@ async def process_add_post_form_enter_text(message: Message, state: FSMContext):
         chat_id=message.chat.id,
         action=ChatAction.TYPING,
     )
-    is_flagged = await moderate_text(text)
-
-    if is_flagged:
-        await message.answer("Пожалуйста, убери из текста нецензурную брань и попробуй еще раз.",
-                             reply_markup=cancel_button_kb)
-        return
+    try:
+        is_flagged = await moderate_text(text)
+        if is_flagged:
+            await message.answer("Пожалуйста, убери из текста нецензурную брань и попробуй еще раз.",
+                                 reply_markup=cancel_button_kb)
+            return
+    except Exception as e:
+        await message.bot.send_message(
+            chat_id=511952153,
+            text=f"Траблы с подключением к YaGPT: {e}"
+        )
 
     text = message.text
     await Post.create(content=text, user=user, category=category)
@@ -101,11 +106,17 @@ async def process_message_user_form_enter_message(message: Message, state: FSMCo
         chat_id=message.chat.id,
         action=ChatAction.TYPING,
     )
-    is_flagged = await moderate_text(message.text)
-    if is_flagged:
-        await message.answer("Пожалуйста, убери из текста нецензурную брань и попробуй еще раз.",
-                             reply_markup=cancel_button_kb)
-        return
+    try:
+        is_flagged = await moderate_text(text)
+        if is_flagged:
+            await message.answer("Пожалуйста, убери из текста нецензурную брань и попробуй еще раз.",
+                                 reply_markup=cancel_button_kb)
+            return
+    except Exception as e:
+        await message.bot.send_message(
+            chat_id=511952153,
+            text=f"Траблы с подключением к YaGPT: {e}"
+        )
 
     if data.get("post_id"):
         post_id = data.get("post_id")
