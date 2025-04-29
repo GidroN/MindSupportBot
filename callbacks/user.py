@@ -5,8 +5,8 @@ from aiogram.types import CallbackQuery
 
 from constants.callbacks import CallbackConstants
 from constants.factory import PaginationMarkup, DeletePostAction, PostChangeItem, SearchPostType
-from database.models import Category, Post, User
-from keyboards.builders import post_kb, categories
+from database.models import Category, Post
+from keyboards.builders import categories
 from keyboards.factories import ChooseCategoryCallback, PaginationCallback, MessageUserCallback, \
     DeletePostCallback, ChangePostInfoCallback
 from keyboards.inline import confirm_post_delete_kb

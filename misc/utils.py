@@ -17,9 +17,15 @@ async def send_user_post_info(posts_list: list[Post],
 
 {post.content}"""
 
+    # Пользователь не может давать советы сам себе (скрывается кнопка дать совет)
+    creator = post.user
+    message_sender = await User.get(tg_id=message.chat.id)
+    give_advice = creator != message_sender
+
     await message.answer(text, reply_markup=post_kb(post_id=post.id,
                                                     to_user=post.user.tg_id,
                                                     from_user=str(callback.from_user.id),
+                                                    show_give_advice=give_advice,
                                                     page=page))
 
 

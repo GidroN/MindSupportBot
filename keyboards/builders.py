@@ -53,6 +53,7 @@ async def categories(show_all: bool = True, cancel: bool = False, show_number_it
 def post_kb(post_id: int,
             to_user: str,
             from_user: str,
+            show_give_advice: bool = True,
             page: int = 0):
     keyboard = InlineKeyboardBuilder()
     keyboard.add(
@@ -64,15 +65,19 @@ def post_kb(post_id: int,
                 action=PaginationAction.NEXT,
             ).pack(),
         ),
-        InlineKeyboardButton(
-            text=BT.GIVE_ADVICE,
-            callback_data=MessageUserCallback(
-                from_user=from_user,
-                to_user=to_user,
-                post_id=post_id,
-            ).pack()
-        )
     )
+
+    if show_give_advice:
+        keyboard.add(
+            InlineKeyboardButton(
+                text=BT.GIVE_ADVICE,
+                callback_data=MessageUserCallback(
+                    from_user=from_user,
+                    to_user=to_user,
+                    post_id=post_id,
+                ).pack()
+            )
+        )
 
     return keyboard.adjust(1).as_markup()
 

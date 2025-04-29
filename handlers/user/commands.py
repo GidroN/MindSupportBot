@@ -120,6 +120,7 @@ async def help_command(message: Message):
         "<b>/profile</b> - Просмотр профиля\n"
         "<b>/my_posts</b> - Просмотр созданных постов\n"
         "<b>/search_posts</b> - Поиск постов\n"
+        "<b>/add_post</b> - Добавить пост\n"
         "<b>/stats</b> - Просмотр статистики\n"
         "<b>/info</b> - Информация о боте\n"
         "<b>/help</b> - Просмотр данного сообщения."
