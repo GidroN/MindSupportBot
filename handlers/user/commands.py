@@ -95,7 +95,7 @@ async def moderate_posts(message: Message, state: FSMContext):
     post_list_ids = await Post.filter(user=user).values_list("id", flat=True)
 
     if not posts:
-        await message.answer("Тыы пока что не добавил ни одного поста. Чтобы добавить пост напиши /add_post")
+        await message.answer("Ты пока что не добавил ни одного поста. Чтобы добавить пост напиши /add_post")
         return
 
     await state.update_data(post_list_ids=post_list_ids)
