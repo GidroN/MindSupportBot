@@ -1,4 +1,3 @@
-import asyncio
 from misc.config import YANDEX_GPT_CATALOG_ID, YANDEX_GPT_API_KEY, YANDEX_GPT_MODEL_TYPE
 
 from yandex_gpt import YandexGPT, YandexGPTConfigManagerForAPIKey

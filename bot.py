@@ -5,10 +5,11 @@ from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.exceptions import TelegramNetworkError
 from aiogram.fsm.storage.redis import RedisStorage
+from redis.asyncio import Redis
 from tortoise import Tortoise
 
 from database.connection import init_database
-from misc.config import BOT_TOKEN, redis_instance
+from misc.config import BOT_TOKEN, REDIS_HOST, REDIS_PORT
 from misc.middlewares import CheckUserExistsMiddleware
 from misc.routers import router
 
@@ -23,6 +24,7 @@ async def main():
     # set up bot
     default = DefaultBotProperties(parse_mode='HTML')
     bot = Bot(token=BOT_TOKEN, default=default)
+    redis_instance = Redis(host=REDIS_HOST, port=int(REDIS_PORT))
     storage = RedisStorage(redis_instance)
     dp = Dispatcher(storage=storage)
     dp.include_router(router)

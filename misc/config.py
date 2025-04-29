@@ -1,7 +1,6 @@
 import os
 import socket
 from dotenv import load_dotenv
-from redis.asyncio.client import Redis
 
 hostname = socket.gethostname()
 
@@ -29,5 +28,3 @@ OPENAI_PROJECT_KEY = os.getenv("OPENAI_API_PROJECT_KEY")
 YANDEX_GPT_MODEL_TYPE = os.getenv("YANDEX_GPT_MODEL_TYPE")
 YANDEX_GPT_CATALOG_ID = os.getenv("YANDEX_GPT_CATALOG_ID")
 YANDEX_GPT_API_KEY = os.getenv("YANDEX_GPT_API_KEY")
-
-redis_instance = Redis(host=REDIS_HOST, port=int(REDIS_PORT))
