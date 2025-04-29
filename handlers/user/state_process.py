@@ -1,4 +1,5 @@
 from aiogram import Router, F
+from aiogram.enums import ChatAction
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, LinkPreviewOptions
 
@@ -54,6 +55,10 @@ async def process_add_post_form_enter_text(message: Message, state: FSMContext):
     if message.text.startswith("https://telegra.ph/"):
         text = await get_telegraph_page_content(text)
 
+    await message.bot.send_chat_action(
+        chat_id=message.chat.id,
+        action=ChatAction.TYPING,
+    )
     is_flagged = await moderate_text(text)
 
     if is_flagged:
@@ -92,6 +97,10 @@ async def process_message_user_form_enter_message(message: Message, state: FSMCo
     reply_to_message_id = data.get("reply_to_message_id", None)
     text = "Тебе пришло сообщение!"
 
+    await message.bot.send_chat_action(
+        chat_id=message.chat.id,
+        action=ChatAction.TYPING,
+    )
     is_flagged = await moderate_text(message.text)
     if is_flagged:
         await message.bot.send_message(
