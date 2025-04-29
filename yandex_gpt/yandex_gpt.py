@@ -97,8 +97,8 @@ class YandexGPTBase:
             end_time = asyncio.get_event_loop().time() + timeout
             while True:
                 # Check if the operation has timed out and if so, raise an exception
-                if asyncio.get_event_loop().time() > end_time:
-                    raise TimeoutError(f"Operation timed out after {timeout} seconds")
+                # if asyncio.get_event_loop().time() > end_time:
+                #     raise TimeoutError(f"Operation timed out after {timeout} seconds")
                 # Polling the operation
                 async with session.get(f"{poll_url}{operation_id}", headers=headers) as resp:
                     # If the request was successful, return the completion result

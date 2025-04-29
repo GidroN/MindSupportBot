@@ -103,10 +103,6 @@ async def process_message_user_form_enter_message(message: Message, state: FSMCo
     )
     is_flagged = await moderate_text(message.text)
     if is_flagged:
-        await message.bot.send_message(
-            chat_id=511952153,
-            text=message.text
-        )
         await message.answer("Пожалуйста, убери из текста нецензурную брань и попробуй еще раз.",
                              reply_markup=cancel_button_kb)
         return
