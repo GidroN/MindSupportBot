@@ -107,7 +107,7 @@ async def process_message_user_form_enter_message(message: Message, state: FSMCo
         action=ChatAction.TYPING,
     )
     try:
-        is_flagged = await moderate_text(text)
+        is_flagged = await moderate_text(message.text)
         if is_flagged:
             await message.answer("Пожалуйста, убери из текста нецензурную брань и попробуй еще раз.",
                                  reply_markup=cancel_button_kb)
