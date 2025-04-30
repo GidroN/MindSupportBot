@@ -6,11 +6,13 @@ from aiogram.types import Message
 from constants.point_counter import Points
 from database.models import User, Post
 from constants.button_text import ButtonText as BT
+from integrations.yandex_gpt.tools import moderate_text
 from keyboards.inline import user_agreement_kb, info_kb
 from keyboards.reply import main_menu_user_kb, menu_button_kb, profile_user_kb, profile_button_kb, \
-    user_agree_agreement_kb
+    user_agree_agreement_kb, cancel_button_kb
 from keyboards.builders import categories
-from misc.states import SearchPostForm, AddPostForm, RegisterUserForm
+from misc.config import ADMINS
+from misc.states import SearchPostForm, AddPostForm, RegisterUserForm, SendNewsletterMessage
 from misc.utils import send_user_change_post_info
 
 router = Router(name="user_commands")
@@ -125,6 +127,15 @@ async def help_command(message: Message):
         "<b>/info</b> - Информация о боте\n"
         "<b>/help</b> - Просмотр данного сообщения"
     )
+
+
+@router.message(Command("newsletter"))
+async def send_newsletter(message: Message, state: FSMContext):
+    if message.from_user.id not in ADMINS:
+        return
+
+    await message.answer("Напиши сообщение, которы хочешь все разослать.", reply_markup=cancel_button_kb)
+    await state.set_state(SendNewsletterMessage.enter_message)
 
 
 @router.message()

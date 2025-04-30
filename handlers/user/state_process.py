@@ -8,7 +8,7 @@ from constants.point_counter import Points
 from database.models import User, Post, Category
 from keyboards.builders import message_user_kb
 from keyboards.reply import main_menu_user_kb, cancel_button_kb
-from misc.states import AddPostForm, MessageUserForm, RegisterUserForm
+from misc.states import AddPostForm, MessageUserForm, RegisterUserForm, SendNewsletterMessage
 from integrations.yandex_gpt.tools import moderate_text
 from misc.utils import get_telegraph_page_content
 
@@ -153,3 +153,26 @@ async def process_message_user_form_enter_message(message: Message, state: FSMCo
 @router.message(MessageUserForm.enter_message, ~F.text)
 async def process_message_user_form_message_enter(message: Message):
     await message.answer("Введи текст!")
+
+
+@router.message(SendNewsletterMessage.enter_message)
+async def process_send_news_letter_message(message: Message, state: FSMContext):
+    if message.text == BT.CANCEL:
+        await message.answer("Отменено", reply_markup=main_menu_user_kb)
+        await state.set_state()
+        return
+
+    users = await User.all()
+
+    for user in users:
+        if str(message.from_user.id) == user.tg_id:
+            continue
+
+        await message.bot.copy_message(
+            chat_id=user.tg_id,
+            message_id=message.message_id,
+            from_chat_id=message.chat.id
+        )
+
+    await message.answer("Рассылка завершена!", reply_markup=main_menu_user_kb)
+    await state.set_state()

@@ -24,3 +24,7 @@ class DeletePostForm(StatesGroup):
 
 class RegisterUserForm(StatesGroup):
     agreement = State()
+
+
+class SendNewsletterMessage(StatesGroup):
+    enter_message = State()
