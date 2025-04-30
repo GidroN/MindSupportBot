@@ -1,5 +1,6 @@
 from enum import StrEnum, unique
 
+
 @unique
 class ButtonText(StrEnum):
     MAIN_MENU = "🏠 Главное меню"
@@ -22,3 +23,7 @@ class ButtonText(StrEnum):
     AGREE_AGREEMENT = '✅ Я согласен с условиями'
     HELP = "⁉ Помощь"
     INFO = "ℹ Информация"
+
+    @classmethod
+    def get_all_buttons(cls):
+        return [button.value for button in cls]

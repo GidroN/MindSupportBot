@@ -9,7 +9,6 @@ from database.models import User, Post, Category
 from keyboards.builders import message_user_kb
 from keyboards.reply import main_menu_user_kb, cancel_button_kb
 from misc.states import AddPostForm, MessageUserForm, RegisterUserForm, SendNewsletterMessage
-from integrations.yandex_gpt.tools import moderate_text
 from misc.utils import get_telegraph_page_content
 
 router = Router(name="user_state_processes")
@@ -51,27 +50,15 @@ async def process_add_post_form_enter_text(message: Message, state: FSMContext):
         await message.answer("Данный пост уже добавлен!", reply_markup=cancel_button_kb)
         return
 
+    await message.bot.send_chat_action(
+        action=ChatAction.TYPING,
+        chat_id=message.chat.id
+    )
+
     text = message.text
     if message.text.startswith("https://telegra.ph/"):
         text = await get_telegraph_page_content(text)
 
-    await message.bot.send_chat_action(
-        chat_id=message.chat.id,
-        action=ChatAction.TYPING,
-    )
-    try:
-        is_flagged = await moderate_text(text)
-        if is_flagged:
-            await message.answer("Пожалуйста, убери из текста нецензурную брань и попробуй еще раз.",
-                                 reply_markup=cancel_button_kb)
-            return
-    except Exception as e:
-        await message.bot.send_message(
-            chat_id=511952153,
-            text=f"Траблы с подключением к YaGPT: {e}"
-        )
-
-    text = message.text
     await Post.create(content=text, user=user, category=category)
     await message.answer("Пост успешно добавлен. Если твой пост не вмещается в одно сообщение,"
                          " то можешь использовать telgra.ph и просто прислать сюда ссылку на статью.", reply_markup=main_menu_user_kb)
@@ -106,17 +93,6 @@ async def process_message_user_form_enter_message(message: Message, state: FSMCo
         chat_id=message.chat.id,
         action=ChatAction.TYPING,
     )
-    try:
-        is_flagged = await moderate_text(message.text)
-        if is_flagged:
-            await message.answer("Пожалуйста, убери из текста нецензурную брань и попробуй еще раз.",
-                                 reply_markup=cancel_button_kb)
-            return
-    except Exception as e:
-        await message.bot.send_message(
-            chat_id=511952153,
-            text=f"Траблы с подключением к YaGPT: {e}"
-        )
 
     if data.get("post_id"):
         post_id = data.get("post_id")
