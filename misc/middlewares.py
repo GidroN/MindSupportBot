@@ -3,6 +3,8 @@ from aiogram.enums import ContentType
 from aiogram.types import Message
 from typing import Any, Awaitable, Callable, Dict
 
+from aiogram.utils.chat_action import ChatActionSender
+
 from constants.button_text import ButtonText
 from constants.commands import CommandText
 from database.models import User
@@ -46,17 +48,18 @@ class ValidateMessageTextMiddleware(BaseMiddleware):
         # кнопками или пойманы хендлером, который ловит все сообщения.
         if text and text not in whitelist and data["handler"].callback.__name__ != "handle_all_messages":
 
-            try:
-                is_flagged = await moderate_text(message.text)
-            except Exception as e:
-                is_flagged = True
-                await message.bot.send_message(
-                    chat_id=511952153,
-                    text=f"Траблы с подключением к YaGPT: {e}"
-                )
+            async with ChatActionSender(bot=message.bot, chat_id=message.chat.id, initial_sleep=0.5):
+                try:
+                    is_flagged = await moderate_text(message.text)
+                except Exception as e:
+                    is_flagged = False
+                    await message.bot.send_message(
+                        chat_id=511952153,
+                        text=f"Траблы с подключением к YaGPT: {e}"
+                    )
 
-            if is_flagged:
-                await message.answer("Не используй нецензурную брань. Это некрасиво. Попробуй еще раз.")
-                return
+                if is_flagged:
+                    await message.answer("Не используй нецензурную брань. Это некрасиво. Попробуй еще раз.")
+                    return
 
         await handler(message, data)
