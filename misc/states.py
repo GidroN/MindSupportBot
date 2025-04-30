@@ -26,5 +26,5 @@ class RegisterUserForm(StatesGroup):
     agreement = State()
 
 
-class SendNewsletterMessage(StatesGroup):
+class SendNewsletterMessageForm(StatesGroup):
     enter_message = State()

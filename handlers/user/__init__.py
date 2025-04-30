@@ -1,11 +1,11 @@
 from aiogram import Router
 from .commands import router as user_commands_router
-from .state_process import router as state_process_router
+from .state_handlers import router as state_handlers_router
 
 router = Router(name="user_handlers")
 
 router.include_routers(
-   state_process_router,
+   state_handlers_router,
    user_commands_router
 )
 

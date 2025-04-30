@@ -12,7 +12,7 @@ from keyboards.reply import main_menu_user_kb, menu_button_kb, profile_user_kb, 
     user_agree_agreement_kb, cancel_button_kb
 from keyboards.builders import categories
 from misc.config import ADMINS
-from misc.states import SearchPostForm, AddPostForm, RegisterUserForm, SendNewsletterMessage
+from misc.states import SearchPostForm, AddPostForm, RegisterUserForm, SendNewsletterMessageForm
 from misc.utils import send_user_change_post_info
 
 router = Router(name="user_commands")
@@ -135,7 +135,7 @@ async def send_newsletter(message: Message, state: FSMContext):
         return
 
     await message.answer("Напиши сообщение, которы хочешь все разослать.", reply_markup=cancel_button_kb)
-    await state.set_state(SendNewsletterMessage.enter_message)
+    await state.set_state(SendNewsletterMessageForm.enter_message)
 
 
 @router.message()
