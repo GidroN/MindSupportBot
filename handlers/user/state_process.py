@@ -9,7 +9,7 @@ from database.models import User, Post, Category
 from keyboards.builders import message_user_kb
 from keyboards.reply import main_menu_user_kb, cancel_button_kb
 from misc.states import AddPostForm, MessageUserForm, RegisterUserForm
-from integrations.yagpt import moderate_text
+from integrations.yandex_gpt.tools import moderate_text
 from misc.utils import get_telegraph_page_content
 
 router = Router(name="user_state_processes")

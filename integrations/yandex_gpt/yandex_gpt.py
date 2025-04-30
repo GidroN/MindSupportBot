@@ -70,7 +70,7 @@ class YandexGPTBase:
     async def poll_async_completion(
             operation_id: str,
             headers: Dict[str, str],
-            timeout: int = 120,
+            timeout: int = 5,
             poll_url: str = 'https://llm.api.cloud.yandex.net/operations/'
     ) -> Dict[str, Any]:
         """
