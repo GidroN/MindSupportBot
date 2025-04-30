@@ -1,4 +1,5 @@
 from aiogram import BaseMiddleware
+from aiogram.enums import ContentType
 from aiogram.types import Message
 from typing import Any, Awaitable, Callable, Dict
 
@@ -36,9 +37,13 @@ class ValidateMessageTextMiddleware(BaseMiddleware):
 
         whitelist = [*ButtonText.get_all_buttons(), *CommandText.get_all_commands()]
 
+        if message.content_type == ContentType.TEXT:
+            text = message.text
+        else:
+            text = message.caption
         # Фильтруем только то те сообщения, которые не являются командами,
         # кнопками или пойманы хендлером, который ловит все сообщения.
-        if message.text not in whitelist and data["handler"].callback.__name__ != "handle_all_messages":
+        if text not in whitelist and data["handler"].callback.__name__ != "handle_all_messages":
 
             try:
                 is_flagged = await moderate_text(message.text)

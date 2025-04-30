@@ -7,7 +7,6 @@ from constants.commands import CommandText
 from constants.point_counter import Points
 from database.models import User, Post
 from constants.button_text import ButtonText as BT
-from integrations.yandex_gpt.tools import moderate_text
 from keyboards.inline import user_agreement_kb, info_kb
 from keyboards.reply import main_menu_user_kb, menu_button_kb, profile_user_kb, profile_button_kb, \
     user_agree_agreement_kb, cancel_button_kb
