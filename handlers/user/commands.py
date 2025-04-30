@@ -3,6 +3,7 @@ from aiogram.filters import CommandStart, Command
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 
+from constants.commands import CommandText
 from constants.point_counter import Points
 from database.models import User, Post
 from constants.button_text import ButtonText as BT
@@ -19,7 +20,7 @@ router = Router(name="user_commands")
 
 
 @router.message(F.text == BT.MAIN_MENU)
-@router.message(Command("menu"))
+@router.message(Command(CommandText.MENU))
 async def main_menu(message: Message, state: FSMContext):
     await message.answer("Ты перешел в главное меню", reply_markup=main_menu_user_kb)
     await state.clear()
@@ -45,7 +46,7 @@ async def start(message: Message, state: FSMContext):
         await message.answer(f"С возвращением <b>{full_name}</b>!", reply_markup=main_menu_user_kb)
 
 
-@router.message(Command("search_posts"))
+@router.message(Command(CommandText.SEARCH_POSTS))
 @router.message(F.text == BT.SEARCH_POST)
 async def wanna_help(message: Message, state: FSMContext):
     await message.answer("Ты перешел в режим оказания помощи", reply_markup=menu_button_kb)
@@ -53,7 +54,7 @@ async def wanna_help(message: Message, state: FSMContext):
     await state.set_state(SearchPostForm.category)
 
 
-@router.message(Command("add_post"))
+@router.message(Command(CommandText.ADD_POST))
 @router.message(F.text == BT.ADD_POST)
 async def need_help(message: Message, state: FSMContext):
     tg_id = message.from_user.id
@@ -71,13 +72,13 @@ async def need_help(message: Message, state: FSMContext):
                          reply_markup=await categories(show_all=False, show_number_items=False))
 
 
-@router.message(Command("profile"))
+@router.message(Command(CommandText.PROFILE))
 @router.message(F.text == BT.PROFILE)
 async def profile(message: Message):
     await message.answer("Ты перешел в свой профиль", reply_markup=profile_user_kb)
 
 
-@router.message(Command("stats"))
+@router.message(Command(CommandText.STATISTICS))
 @router.message(F.text == BT.STATISTICS)
 async def user_stats(message: Message):
     tg_id = message.from_user.id
@@ -88,7 +89,7 @@ async def user_stats(message: Message):
                          f"📚 Опубликованные посты: <b>{published_posts}</b>\n")
 
 
-@router.message(Command("my_posts"))
+@router.message(Command(CommandText.MY_POSTS))
 @router.message(F.text == BT.MODERATE_POST)
 async def moderate_posts(message: Message, state: FSMContext):
     tg_id = message.from_user.id
@@ -105,7 +106,7 @@ async def moderate_posts(message: Message, state: FSMContext):
     await send_user_change_post_info(posts, message)
 
 
-@router.message(Command("info"))
+@router.message(Command(CommandText.INFO))
 @router.message(F.text == BT.INFO)
 async def info_command(message: Message):
     await message.answer(
@@ -114,7 +115,7 @@ async def info_command(message: Message):
     )
 
 
-@router.message(Command("help"))
+@router.message(Command(CommandText.HELP))
 async def help_command(message: Message):
     await message.answer(
         "Команды для использования бота:\n"
@@ -129,7 +130,7 @@ async def help_command(message: Message):
     )
 
 
-@router.message(Command("newsletter"))
+@router.message(Command(CommandText.NEWSLETTER))
 async def send_newsletter(message: Message, state: FSMContext):
     if message.from_user.id not in ADMINS:
         return
