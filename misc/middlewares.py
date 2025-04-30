@@ -36,7 +36,9 @@ class ValidateMessageTextMiddleware(BaseMiddleware):
 
         whitelist = [*ButtonText.get_all_buttons(), *CommandText.get_all_commands()]
 
-        if message.text not in whitelist:
+        # Фильтруем только то те сообщения, которые не являются командами,
+        # кнопками или пойманы хендлером, который ловит все сообщения.
+        if message.text not in whitelist and data["handler"].callback.__name__ != "handle_all_messages":
 
             try:
                 is_flagged = await moderate_text(message.text)
