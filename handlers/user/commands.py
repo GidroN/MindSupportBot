@@ -21,8 +21,8 @@ router = Router(name="user_commands")
 @router.message(IsNotActiveUser())
 @router.message(IsNotActiveUser(), F.text == BT.DEATH)
 async def handle_not_active_user(message: Message):
-    user = await User.get(tg_id=message.from_user.id)
-    await message.answer(f"<b>Уважаемый пользователь {user.name}! </b>\n"
+    user = message.from_user.full_name
+    await message.answer(f"<b>Уважаемый пользователь {user}! </b>\n"
                          f"Твой акканут был заблокирован администрацией нарушение правил.\n",
                          reply_markup=help_kb)
 
