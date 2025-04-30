@@ -6,6 +6,7 @@ class User(models.Model):
     username = fields.CharField(max_length=32, null=True)
     name = fields.CharField(max_length=129)  # 128 max chars + spacebar
     is_active = fields.BooleanField(default=True)
+    is_admin = fields.BooleanField(default=False)
     points = fields.IntField(default=5)
 
     def __str__(self):
