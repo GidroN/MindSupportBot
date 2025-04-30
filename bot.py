@@ -31,7 +31,7 @@ async def main():
 
     # set up middlewares
     dp.message.outer_middleware(CheckUserExistsMiddleware())
-    dp.message.middleware(ValidateMessageTextMiddleware())
+    # dp.message.middleware(ValidateMessageTextMiddleware())
 
     await bot.delete_webhook(drop_pending_updates=True)
     try:
