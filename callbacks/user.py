@@ -71,11 +71,9 @@ async def process_search_result(callback: CallbackQuery, callback_data: Paginati
         page -= 1
 
     if page < 0:
-        page = 0
         await callback.answer("Это первая запись.")
         return
     elif page >= len(result):
-        page = len(result) - 1
         await callback.answer("Это последняя запись.")
         return
 

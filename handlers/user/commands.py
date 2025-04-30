@@ -9,14 +9,22 @@ from database.models import User, Post
 from constants.button_text import ButtonText as BT
 from keyboards.inline import user_agreement_kb, info_kb
 from keyboards.reply import main_menu_user_kb, menu_button_kb, profile_user_kb, profile_button_kb, \
-    user_agree_agreement_kb, cancel_button_kb
+    user_agree_agreement_kb, cancel_button_kb, help_kb
 from keyboards.builders import categories
 from misc.config import ADMINS
+from misc.filters import IsNotActiveUser
 from misc.states import SearchPostForm, AddPostForm, RegisterUserForm, SendNewsletterMessageForm
 from misc.utils import send_user_change_post_info
 
 router = Router(name="user_commands")
 
+@router.message(IsNotActiveUser())
+@router.message(IsNotActiveUser(), F.text == BT.DEATH)
+async def handle_not_active_user(message: Message):
+    user = await User.get(tg_id=message.from_user.id)
+    await message.answer(f"<b>Уважаемый пользователь {user.name}! </b>\n"
+                         f"Твой акканут был заблокирован администрацией нарушение правил.\n",
+                         reply_markup=help_kb)
 
 @router.message(F.text == BT.MAIN_MENU)
 @router.message(Command(CommandText.MENU))

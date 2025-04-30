@@ -23,6 +23,7 @@ class ButtonText(StrEnum):
     AGREE_AGREEMENT = '✅ Я согласен с условиями'
     HELP = "⁉ Помощь"
     INFO = "ℹ Информация"
+    DEATH = "💀"
 
     @classmethod
     def get_all_buttons(cls):
