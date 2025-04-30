@@ -13,7 +13,6 @@ CREATE TABLE IF NOT EXISTS "user" (
     "username" VARCHAR(32),
     "name" VARCHAR(129) NOT NULL,
     "is_active" BOOL NOT NULL DEFAULT True,
-    "is_admin" BOOL NOT NULL DEFAULT False,
     "points" INT NOT NULL DEFAULT 5
 );
 CREATE TABLE IF NOT EXISTS "post" (
