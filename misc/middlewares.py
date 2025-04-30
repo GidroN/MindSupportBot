@@ -41,9 +41,10 @@ class ValidateMessageTextMiddleware(BaseMiddleware):
             text = message.text
         else:
             text = message.caption
+
         # Фильтруем только то те сообщения, которые не являются командами,
         # кнопками или пойманы хендлером, который ловит все сообщения.
-        if text not in whitelist and data["handler"].callback.__name__ != "handle_all_messages":
+        if text and text not in whitelist and data["handler"].callback.__name__ != "handle_all_messages":
 
             try:
                 is_flagged = await moderate_text(message.text)
