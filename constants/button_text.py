@@ -3,12 +3,9 @@ from enum import StrEnum, unique
 @unique
 class ButtonText(StrEnum):
     MAIN_MENU = "🏠 Главное меню"
-    SEARCH_POST = "🔎 Хочу помочь"
-    ADD_POST = "💓 Получить помощь"
+    SEARCH_POST = "🔎 Помочь"
+    ADD_POST = "💓 Нужен совет"
     ALL_POSTS = "🌐 Все посты"
-    FAVOURITE = "♥ Избранное"
-    ADD_TO_FAVOURITE = "🤍"
-    ADDED_TO_FAVOURITE = "♥"
     PROFILE = "⚙ Профиль"
     PREV = "⬅"
     NEXT = "➡"
@@ -17,9 +14,8 @@ class ButtonText(StrEnum):
     CANCEL = "❌ Отмена"
     CONFIRM = "✔ Принять"
     STATISTICS = "📈 Статистика"
-    CHANGE_POST_NAME = "✏ Изменить название"
     CHANGE_CATEGORY = "✏ Изменить категорию"
-    MODERATE_POST = "🛠 Управлять постами"
+    MODERATE_POST = "🛠 Мои посты"
     DELETE_POST = "🗑"
     HOW_TO_EARN_POINTS = "❓ Как получить баллы?"
     READ_AGREEMENT = '📕 Прочесть условия использования'

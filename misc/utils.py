@@ -13,7 +13,7 @@ async def send_user_post_info(posts_list: list[Post],
 
     text = f"""Пост {page + 1}/{len(posts_list)}
 <i>{post.created_at.strftime("%d.%m.%Y")}</i>
-Категория: {post.category.name}
+{post.category.name}
 
 {post.content}"""
 
@@ -38,7 +38,7 @@ async def send_user_change_post_info(posts_list: list[Post],
     text = f"""Пост {page + 1}/{len(posts_list)}
 <i>{post.created_at}</i>
 <i>{post.created_at.strftime("%d.%m.%Y")}</i>
-Категория: {post.category.name}
+{post.category.name}
 
 {post.content}"""
 
