@@ -10,7 +10,9 @@ from tortoise import Tortoise
 
 from database.connection import init_database
 from misc.config import BOT_TOKEN, REDIS_HOST, REDIS_PORT
-from misc.middlewares import CheckUserExistsMiddleware, ValidateMessageTextMiddleware
+from middlewares.user_exists import CheckUserExistsMiddleware
+from middlewares.validate_message_text import ValidateMessageTextMiddleware
+from middlewares.throttling import ThrottlingMiddleware
 from misc.routers import router
 
 
@@ -30,8 +32,9 @@ async def main():
     dp.include_router(router)
 
     # set up middlewares
+    dp.message.outer_middleware(ThrottlingMiddleware())
     dp.message.outer_middleware(CheckUserExistsMiddleware())
-    # dp.message.middleware(ValidateMessageTextMiddleware())
+    dp.message.middleware(ValidateMessageTextMiddleware())
 
     await bot.delete_webhook(drop_pending_updates=True)
     try:

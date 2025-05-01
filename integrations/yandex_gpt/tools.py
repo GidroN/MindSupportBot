@@ -9,14 +9,14 @@ config_manager = YandexGPTConfigManagerForAPIKey(
 yandex_gpt = YandexGPT(config_manager=config_manager)
 
 
-async def moderate_text(text: str) -> bool:
+async def moderate_text(text: str, timeout: int = 20) -> bool:
     system_text = "Привет, твоя задача найти в тексте нецензурную брань (мат, пошлости и прочая сильная цензура) и вернуть 1, если она найдена. В противном случае - 0."
     completion = await yandex_gpt.get_async_completion(
         messages=[
             {"role": "system", "text": system_text},
             {"role": "user", "text": text}
         ],
-        timeout=20,
+        timeout=timeout,
         max_tokens=3000
     )
 
