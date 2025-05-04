@@ -24,6 +24,7 @@ class ButtonText(StrEnum):
     HELP = "⁉ Помощь"
     INFO = "ℹ Информация"
     DEATH = "💀"
+    SUGGEST_UPDATE = "👀 Предложить улучшение"
 
     @classmethod
     def get_all_buttons(cls):

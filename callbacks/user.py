@@ -11,7 +11,8 @@ from keyboards.factories import ChooseCategoryCallback, PaginationCallback, Mess
     DeletePostCallback, ChangePostInfoCallback
 from keyboards.inline import confirm_post_delete_kb
 from keyboards.reply import cancel_button_kb, profile_user_kb
-from misc.states import SearchPostForm, AddPostForm, MessageUserForm, DeletePostForm, EditPostForm
+from misc.states import SearchPostForm, AddPostForm, MessageUserForm, DeletePostForm, EditPostForm, \
+    SendQuestionOrSuggestionToDeveloper
 from misc.utils import send_user_post_info, send_user_change_post_info
 
 router = Router(name="user_callbacks")
@@ -181,4 +182,11 @@ async def remove_category_change_message(callback: CallbackQuery, state: FSMCont
 @router.callback_query(default_state, F.data == CallbackConstants.SEND_HELP_MESSAGE)
 async def send_help_message(callback: CallbackQuery):
     await callback.answer()
-    await callback.message.answer("По всем возникшим вопроса обращайся к <b>@sbxxnl</b> или к <b>@gidronn</b>.")
+    await callback.message.answer("Если произошло что-то срочное, то обращайся к <b>@sbxxnl</b> ")
+
+
+@router.callback_query(default_state, F.data == CallbackConstants.SUGGEST_TO_UPDATE_BOT)
+async def suggest_to_update_bot(callback: CallbackQuery, state: FSMContext):
+    await callback.message.answer("Напиши свои пожелания по улучшению бота или задай вопрос разработчику. Можно прислать скрин или файл.", reply_markup=cancel_button_kb)
+    await callback.answer()
+    await state.set_state(SendQuestionOrSuggestionToDeveloper.enter_message)

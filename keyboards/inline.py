@@ -50,10 +50,16 @@ info_kb = InlineKeyboardMarkup(
                 url="https://telegra.ph/How-to-earn-points-04-12",
             )
         ],
+        # [
+        #     InlineKeyboardButton(
+        #         text=BT.HELP,
+        #         callback_data=CallbackConstants.SEND_HELP_MESSAGE
+        #     )
+        # ],
         [
             InlineKeyboardButton(
-                text=BT.HELP,
-                callback_data=CallbackConstants.SEND_HELP_MESSAGE
+                text=BT.SUGGEST_UPDATE,
+                callback_data=CallbackConstants.SUGGEST_TO_UPDATE_BOT
             )
         ]
     ]

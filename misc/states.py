@@ -28,3 +28,7 @@ class RegisterUserForm(StatesGroup):
 
 class SendNewsletterMessageForm(StatesGroup):
     enter_message = State()
+
+
+class SendQuestionOrSuggestionToDeveloper(StatesGroup):
+    enter_message = State()
