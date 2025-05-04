@@ -53,6 +53,7 @@ async def choose_category_to_search_post(callback: CallbackQuery, callback_data:
     await send_user_post_info(posts_list=posts_list, callback=callback)
     await state.set_state()
     await state.update_data(post_list_ids=posts_list_ids)
+    await callback.message.delete()
 
 
 @router.callback_query(default_state, PaginationCallback.filter())
