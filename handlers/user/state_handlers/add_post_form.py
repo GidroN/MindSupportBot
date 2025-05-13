@@ -8,8 +8,6 @@ from constants.point_counter import Points
 from database.models import Category, User, Post
 from keyboards.reply import main_menu_user_kb, cancel_button_kb
 from misc.states import AddPostForm
-from misc.utils import get_telegraph_page_content
-
 
 router = Router(name="user_state_handlers_add_post_form")
 
@@ -18,6 +16,15 @@ router = Router(name="user_state_handlers_add_post_form")
 async def process_add_post_form_enter_text_cancel(message: Message, state: FSMContext):
     await message.answer("Отменено.", reply_markup=main_menu_user_kb)
     await state.set_state()
+
+
+@router.message(AddPostForm.enter_text, F.text.len() < 50 | F.text.startswith("/"))
+async def process_add_post_form_enter_text_check_length(message: Message):
+    text_length = len(message.text)
+    if message.text.startswith("/"):
+        await message.answer("Текст не может начинаться с <b>/</b>")
+    elif text_length < 50:
+        await message.answer(f"Текст не может быть короче чем 50 символов. Сейчас длина у тебя <b>{text_length}</b>")
 
 
 @router.message(AddPostForm.enter_text, F.text)
@@ -39,14 +46,14 @@ async def process_add_post_form_enter_text(message: Message, state: FSMContext):
     )
 
     text = message.text
-    # if message.text.startswith("https://telegra.ph/"):
-    #     text = await get_telegraph_page_content(text)
 
     await Post.create(content=text, user=user, category=category)
-    await message.answer("Спасибо что поделился своими мыслями!\n"
-                         "Если есть какие-то замечания или предложения по улучшению бота, "
-                         "то можешь написать разработчику - /info",
-                         reply_markup=main_menu_user_kb)
+    await message.answer("Спасибо что поделился своими мыслями!\n")
+    await message.answer(
+        "Если есть какие-то замечания или предложения по улучшению бота, "
+        "то можешь написать разработчику - /info",
+        reply_markup=main_menu_user_kb
+    )
 
     user = await User.get(tg_id=message.from_user.id)
     user.points += Points.HELP
