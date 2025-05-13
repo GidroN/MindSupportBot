@@ -94,7 +94,7 @@ async def message_user_callback(callback: CallbackQuery, callback_data: MessageU
     post_id = callback_data.post_id
     reply_to_message_id = callback_data.reply_to_message_id
 
-    await callback.answer("Ты отправляете сообщение автору")
+    await callback.answer("Ты отправляешь сообщение автору")
     await callback.message.answer("Набери сообщение, которое хочешь отправить автору.", reply_markup=cancel_button_kb)
     await state.set_state(MessageUserForm.enter_message)
     await state.update_data(to_user=to_user, post_id=post_id, from_user=from_user, reply_to_message_id=reply_to_message_id)

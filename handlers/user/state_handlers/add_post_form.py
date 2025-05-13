@@ -39,12 +39,13 @@ async def process_add_post_form_enter_text(message: Message, state: FSMContext):
     )
 
     text = message.text
-    if message.text.startswith("https://telegra.ph/"):
-        text = await get_telegraph_page_content(text)
+    # if message.text.startswith("https://telegra.ph/"):
+    #     text = await get_telegraph_page_content(text)
 
     await Post.create(content=text, user=user, category=category)
-    await message.answer("Пост успешно добавлен. Если твой пост не вмещается в одно сообщение,"
-                         " то можешь использовать telgra.ph и просто прислать сюда ссылку на статью.",
+    await message.answer("Спасибо что поделился своими мыслями!\n"
+                         "Если есть какие-то замечания или предложения по улучшению бота, "
+                         "то можешь написать разработчику - /info",
                          reply_markup=main_menu_user_kb)
 
     user = await User.get(tg_id=message.from_user.id)
