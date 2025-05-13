@@ -1,5 +1,4 @@
 from aiogram.types import CallbackQuery, Message
-from telegraph.aio import Telegraph
 
 from database.models import User, Post
 from keyboards.builders import post_kb, change_post_kb
@@ -50,7 +49,7 @@ async def send_user_change_post_info(posts_list: list[Post],
         await message.edit_reply_markup(reply_markup=reply_markup)
 
 
-async def get_telegraph_page_content(url: str) -> str:
-    telegraph = Telegraph()
-    response = await telegraph.get_page(url[19:])
-    return response["content"]
+# async def get_telegraph_page_content(url: str) -> str:
+#     telegraph = Telegraph()
+#     response = await telegraph.get_page(url[19:])
+#     return response["content"]

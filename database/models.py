@@ -1,3 +1,4 @@
+from datetime import datetime
 from tortoise import models, fields
 
 
@@ -7,6 +8,7 @@ class User(models.Model):
     name = fields.CharField(max_length=129)  # 128 max chars + spacebar
     is_active = fields.BooleanField(default=True)
     points = fields.IntField(default=5)
+    last_day_online = fields.DateField(default=datetime.today())
 
     def __str__(self):
         return f"{self.name} - {self.username} - {self.tg_id}"
