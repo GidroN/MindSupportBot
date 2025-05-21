@@ -94,12 +94,12 @@ async def message_user_callback(callback: CallbackQuery, callback_data: MessageU
     post_id = callback_data.post_id
     reply_to_message_id = callback_data.reply_to_message_id
 
-    await callback.answer("Ты отправляешь сообщение автору")
+    if await Post.get_or_none(id=post_id) is None:
+        await callback.answer("Данный пост уже удален.", show_alert=True)
+        await state.set_state()
+        return
 
-    # if not await Post.get_or_none(id=post_id):
-    #     await callback.message.answer("Данный пост уже удален.")
-    #     await state.set_state()
-    #     return
+    await callback.answer("Ты отправляешь сообщение автору")
 
     await callback.message.answer("Набери сообщение, которое хочешь отправить автору.", reply_markup=cancel_button_kb)
     await state.set_state(MessageUserForm.enter_message)
